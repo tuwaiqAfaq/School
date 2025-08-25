@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إضافة إدخال جديد - الشركة الأولى</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .char-counter {
+            text-align: left;
+            color: #999;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(79, 172, 254, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #666;
+            border: 2px solid #e1e5e9;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-btn">← العودة</a>
+    
+    <div class="container">
+        <div class="header">
+            <h1>إضافة إدخال جديد</h1>
+            <p class="subtitle">الشركة الأولى</p>
+        </div>
+
+        <div id="successMessage" class="success-message">
+            تم إضافة الإدخال بنجاح! ✅
+        </div>
+
+        <div id="errorMessage" class="error-message">
+            يرجى إدخال نص صالح ❌
+        </div>
+
+        <form id="entryForm">
+            <div class="form-group">
+                <label for="entryText">النص المراد إضافته:</label>
+                <textarea 
+                    id="entryText" 
+                    name="entryText" 
+                    placeholder="اكتب النص هنا..."
+                    maxlength="1000"
+                    required
+                ></textarea>
+                <div class="char-counter">
+                    <span id="charCount">0</span> / 1000 حرف
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary">
+                    ➕ إضافة الإدخال
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="clearForm()">
+                    🗑️ مسح النموذج
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="../shared/core.js"></script>
+    <script>
+        // تحديث عداد الأحرف
+        const textArea = document.getElementById('entryText');
+        const charCount = document.getElementById('charCount');
+        
+        textArea.addEventListener('input', function() {
+            charCount.textContent = this.value.length;
+        });
+
+        // معالجة إرسال النموذج
+        document.getElementById('entryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const text = textArea.value.trim();
+            const successMsg = document.getElementById('successMessage');
+            const errorMsg = document.getElementById('errorMessage');
+            
+            // إخفاء الرسائل السابقة
+            successMsg.style.display = 'none';
+            errorMsg.style.display = 'none';
+            
+            if (text === '') {
+                errorMsg.style.display = 'block';
+                textArea.focus();
+                return;
+            }
+            
+            if (textSystem && textSystem.addEntry(text)) {
+                successMsg.style.display = 'block';
+                textArea.value = '';
+                charCount.textContent = '0';
+                
+                // إخفاء رسالة النجاح بعد 3 ثواني
+                setTimeout(() => {
+                    successMsg.style.display = 'none';
+                }, 3000);
+            } else {
+                errorMsg.style.display = 'block';
+            }
+        });
+
+        // مسح النموذج
+        function clearForm() {
+            if (confirm('هل أنت متأكد من مسح النموذج؟')) {
+                textArea.value = '';
+                charCount.textContent = '0';
+                document.getElementById('successMessage').style.display = 'none';
+                document.getElementById('errorMessage').style.display = 'none';
+            }
+        }
+
+        // التركيز على النص عند تحميل الصفحة
+        window.addEventListener('load', function() {
+            textArea.focus();
+        });
+    </script>
+</body>
+</html>
+
